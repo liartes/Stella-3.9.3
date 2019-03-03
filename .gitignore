@@ -1,0 +1,12 @@
+*.gcda
+*.ipk
+*.o
+*.a
+.deps
+*.d
+src/cheat/.deps/*.d
+src/common/.deps/*.d
+src/emucore/.deps/*.d
+src/gui/.deps/*.d
+./stella
+./stella.opk
