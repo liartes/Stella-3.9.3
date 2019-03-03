@@ -119,7 +119,7 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       title = string("Stella ") + STELLA_VERSION;
       ADD_ATEXT("\\CA multi-platform Atari 2600 VCS emulator");
 #ifdef GCW0
-      ADD_ATEXT("\\CPorted to the GCW0 by David Knight 2015/10/04");
+      ADD_ATEXT("\\CGCW0: David Knight, RS97: Gameblabla");
 #endif
       ADD_ATEXT(string("\\C\\c2Features: ") + instance().features());
       ADD_ATEXT(string("\\C\\c2") + instance().buildInfo());

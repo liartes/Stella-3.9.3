@@ -327,6 +327,35 @@ void EventHandler::poll(uInt64 time)
   //mouse emulation
   static int move_left = 0, move_right = 0, move_up = 0, move_down = 0;
   static int mouseTime = 0; //Controls speed of mouse emulation, speed linearly ramps up with time.
+  
+	Uint8 *keystate = SDL_GetKeyState(NULL);
+	if(keystate[SDLK_RIGHT])
+	{
+		move_right = 1;
+		move_left  = 0;
+	}
+	else if(keystate[SDLK_LEFT])
+	{
+		move_right = 0;
+		move_left  = 1;
+	}
+	else
+		move_right = move_left  = 0;
+				
+	if(keystate[SDLK_DOWN])
+	{
+		move_down = 1;
+		move_up   = 0;
+	}
+	else if(keystate[SDLK_UP])
+	{
+		move_down = 0;
+		move_up   = 1;
+	}
+	else
+		move_up = move_down = 0;
+		
+  
   if(move_left || move_right || move_up || move_down)
   {
 	int gcw_x, gcw_y;
@@ -1729,6 +1758,7 @@ void EventHandler::setDefaultKeymap(Event::Type event, EventMode mode)
       SET_DEFAULT_KEY(KBDK_RETURN,    mode, Event::MenuMode,          event); //START
       SET_DEFAULT_KEY(KBDK_ESCAPE,    mode, Event::ConsoleReset,      event); //SELECT
       SET_DEFAULT_KEY(KBDK_PAUSE,     mode, Event::PauseMode,         event); //SLIDER DOWN
+      SET_DEFAULT_KEY(KBDK_END,    mode, Event::MenuMode,          event); //START
 
 /*
       SET_DEFAULT_KEY(KBDK_F3,        mode, Event::ConsoleColor,      event);
@@ -1807,10 +1837,10 @@ void EventHandler::setDefaultKeymap(Event::Type event, EventMode mode)
       break;
 
     case kMenuMode:
-      SET_DEFAULT_KEY(KBDK_UP,        mode, Event::UIUp,      event);
+      /*SET_DEFAULT_KEY(KBDK_UP,        mode, Event::UIUp,      event);
       SET_DEFAULT_KEY(KBDK_DOWN,      mode, Event::UIDown,    event);
       SET_DEFAULT_KEY(KBDK_LEFT,      mode, Event::UILeft,    event);
-      SET_DEFAULT_KEY(KBDK_RIGHT,     mode, Event::UIRight,   event);
+      SET_DEFAULT_KEY(KBDK_RIGHT,     mode, Event::UIRight,   event);*/
       SET_DEFAULT_KEY(KBDK_RETURN,    mode, Event::UISelect,  event);
       SET_DEFAULT_KEY(KBDK_BACKSPACE, mode, Event::UIPrevDir, event);
 #ifdef GCW0
@@ -2365,6 +2395,7 @@ void EventHandler::setSDLMappings()
   ourKBDKMapping[ KBDK_BACKSPACE ]    = "R";
   ourKBDKMapping[ KBDK_ESCAPE ]       = "SELECT";
   ourKBDKMapping[ KBDK_RETURN ]       = "START";
+  ourKBDKMapping[ KBDK_END ]       = "POWER";
 #else
   ourKBDKMapping[ KBDK_TAB ]          = "TAB";
   ourKBDKMapping[ KBDK_BACKSPACE ]    = "BACKSPACE";

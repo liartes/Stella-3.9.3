@@ -99,7 +99,13 @@ bool FrameBufferSoft::setVidMode(VideoMode& mode)
 #endif
   }
 #ifdef GCW0
-  myScreen = SDL_SetVideoMode(mode.screen_w, mode.screen_h, 16, SDL_HWSURFACE | SDL_TRIPLEBUF | mySDLFlags);
+  myScreen = SDL_SetVideoMode(mode.screen_w, mode.screen_h, 16,
+#ifdef BITTBOY
+  SDL_HWSURFACE |
+#else
+  SDL_HWSURFACE | SDL_TRIPLEBUF |
+#endif
+	mySDLFlags);
 #else
   myScreen = SDL_SetVideoMode(mode.screen_w, mode.screen_h, 0, mySDLFlags);
 #endif

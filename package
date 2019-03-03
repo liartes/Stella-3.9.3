@@ -1,0 +1,50 @@
+#!/bin/sh
+
+mkdir -p ipkg/home/retrofw/emus/stella
+mkdir -p ipkg/home/retrofw/apps/gmenu2x/sections/emulators
+cp stella ipkg/home/retrofw/emus/stella/stella
+cp gcwopk/Copyright.txt ipkg/home/retrofw/emus/stella/Copyright.txt
+cp gcwopk/License.txt ipkg/home/retrofw/emus/stella/License.txt
+cp gcwopk/stella-32x32.png ipkg/home/retrofw/emus/stella/stella.png
+cp gcwopk/CLASSIC_01_BLUE.png ipkg/home/retrofw/emus/stella/CLASSIC_01_BLUE.png
+
+cd ipkg
+
+# https://unix.stackexchange.com/questions/219268/how-to-add-new-lines-when-using-echo
+print()
+	case    ${IFS- } in
+	(\ *)   printf  %b\\n "$*";;
+	(*)     IFS=\ $IFS
+	printf  %b\\n "$*"
+	IFS=${IFS#?}
+esac
+
+# Create GmenuNx entry file plus other things
+
+print 'Package: Stella
+Version: 20190303
+Description: 2600 emulator
+Section: emus
+Priority: optional
+Maintainer: gameblabla/David Knight
+Architecture: mipsel
+Homepage: https://github.com/gameblabla/Stella-3.9.3
+Depends:
+Source: https://github.com/gameblabla/Stella-3.9.3' > control
+
+print '2.0' > debian-binary
+
+print 'title=stella
+description=2600 Emulator
+exec=/home/retrofw/emus/stella/stella
+clock=600
+selectordir=/home/retrofw/roms
+selectorfilter=.a26,.bin,.zip
+' > home/retrofw/apps/gmenu2x/sections/emulators/stella
+
+tar -czvf control.tar.gz control --owner=0 --group=0
+tar -czvf data.tar.gz home --owner=0 --group=0
+ar rv ../stella.ipk control.tar.gz data.tar.gz debian-binary
+
+cd ..
+rm -r ipkg
