@@ -21,7 +21,7 @@
 #define EVENTHANDLER_HXX
 
 #include <map>
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 class Console;
 class OSystem;

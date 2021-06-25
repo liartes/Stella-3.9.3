@@ -19,7 +19,7 @@
 
 #ifdef DISPLAY_OPENGL
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include <SDL_syswm.h>
 #include <sstream>
 #include <time.h>

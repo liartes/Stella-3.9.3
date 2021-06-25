@@ -24,7 +24,7 @@
 
 class OSystem;
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 #include "bspf.hxx"
 #include "TIASnd.hxx"

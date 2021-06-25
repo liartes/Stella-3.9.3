@@ -22,7 +22,7 @@
 #include <sstream>
 #include <cassert>
 #include <cmath>
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 #include "TIASnd.hxx"
 #include "FrameBuffer.hxx"
@@ -44,6 +44,7 @@ SoundSDL::SoundSDL(OSystem* osystem)
     myVolume(100)
 {
   myOSystem->logMessage("SoundSDL::SoundSDL started ...", 2);
+  fprintf(stderr,"SoundSDL BEGIN\n");
 
   // The sound system is opened only once per program run, to eliminate
   // issues with opening and closing it multiple times
@@ -63,6 +64,7 @@ SoundSDL::SoundSDL(OSystem* osystem)
     buf << "WARNING: Couldn't open SDL audio system! " << endl
         << "         " << SDL_GetError() << endl;
     myOSystem->logMessage(buf.str(), 0);
+    fprintf(stderr,"SoundSDL error while opening Audio\n");
     return;
   }
 
@@ -76,6 +78,7 @@ SoundSDL::SoundSDL(OSystem* osystem)
     myOSystem->logMessage(buf.str(), 0);
 
     SDL_CloseAudio();
+    fprintf(stderr,"SoundSDL error occured with realtime audio\n");
     return;
   }
 
@@ -86,7 +89,7 @@ SoundSDL::SoundSDL(OSystem* osystem)
 
   myIsInitializedFlag = true;
   SDL_PauseAudio(1);
-
+  fprintf(stderr,"SoundSDL END\n");
   myOSystem->logMessage("SoundSDL::SoundSDL initialized", 2);
 }
 
@@ -115,6 +118,7 @@ void SoundSDL::setEnabled(bool state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::open()
 {
+  fprintf(stderr, "SoundSDL::open started ...");
   myOSystem->logMessage("SoundSDL::open started ...", 2);
   myIsEnabled = false;
   mute(true);
@@ -148,6 +152,7 @@ void SoundSDL::open()
   myIsEnabled = true;
   mute(false);
 
+  fprintf(stderr, "SoundSDL::open finished");
   myOSystem->logMessage("SoundSDL::open finished", 2);
 }
 

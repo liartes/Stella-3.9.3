@@ -10,3 +10,7 @@ src/emucore/.deps/*.d
 src/gui/.deps/*.d
 ./stella
 ./stella.opk
+
+.cproject
+
+.project

@@ -64,7 +64,8 @@ else
   endif
 endif
 
-CXXFLAGS+= -DGCW0
+#CXXFLAGS+= -DGCW0
+CXXFLAGS+= -DBITTBOY
 
 # Even more warnings...
 #CXXFLAGS+= -pedantic -Wpointer-arith -Wcast-qual -Wconversion

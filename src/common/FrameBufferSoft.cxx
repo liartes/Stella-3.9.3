@@ -18,7 +18,7 @@
 //============================================================================
 
 #include <sstream>
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 #include "bspf.hxx"
 
@@ -30,6 +30,12 @@
 #include "TIA.hxx"
 
 #include "FrameBufferSoft.hxx"
+
+
+#ifndef SDL_TRIPLEBUF
+#define SDL_TRIPLEBUF SDL_DOUBLEBUF
+#endif
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSoft::FrameBufferSoft(OSystem* osystem)
@@ -99,7 +105,8 @@ bool FrameBufferSoft::setVidMode(VideoMode& mode)
 #endif
   }
 #ifdef GCW0
-  myScreen = SDL_SetVideoMode(mode.screen_w, mode.screen_h, 16,
+  //myScreen = SDL_SetVideoMode(mode.screen_w, mode.screen_h, 0,
+  myScreen = SDL_SetVideoMode(mode.screen_w, mode.screen_h, 0,
 #ifdef BITTBOY
   SDL_HWSURFACE |
 #else
@@ -109,6 +116,7 @@ bool FrameBufferSoft::setVidMode(VideoMode& mode)
 #else
   myScreen = SDL_SetVideoMode(mode.screen_w, mode.screen_h, 0, mySDLFlags);
 #endif
+
   if(myScreen == NULL)
   {
     ostringstream buf;
@@ -118,7 +126,8 @@ bool FrameBufferSoft::setVidMode(VideoMode& mode)
   }
   myFormat = myScreen->format;
   myBytesPerPixel = myFormat->BytesPerPixel;
-
+  fprintf(stderr, "Opening window with resolution %i*%i*%i\n",
+		  mode.screen_w, mode.screen_h, myBytesPerPixel);
   // Make sure the flags represent the current screen state
   mySDLFlags = myScreen->flags;
 
@@ -139,6 +148,8 @@ bool FrameBufferSoft::setVidMode(VideoMode& mode)
       break;
   }
   myBaseOffset = mode.image_y * myPitch + mode.image_x;
+
+  fprintf(stderr,"byBaseOffset -> %i\n", myBaseOffset);
 
   // If software mode can open the given screen, it will always be in the
   // requested format, or not at all; we only update mode when the screen
@@ -605,6 +616,7 @@ void FrameBufferSoft::postFrameUpdate()
 {
   if(myTiaDirty && !myInUIMode) //used during emulation and showing initial menu
   {
+	  fprintf(stderr,"postFrameUdpdate emulation and initial menu\n");
 #ifdef GCW0
     SDL_Flip(myScreen);
 #else
@@ -614,6 +626,7 @@ void FrameBufferSoft::postFrameUpdate()
   }
   else if(myRectList->numRects() > 0) //used to update menu highlighted buttons
   {
+	  fprintf(stderr,"postFrameUdpdate menu highlighted buttons\n");
 //myRectList->print(myScreen->w, myScreen->h);
 #ifdef GCW0
     SDL_Flip(myScreen);
@@ -622,7 +635,7 @@ void FrameBufferSoft::postFrameUpdate()
 #endif
   }
 #ifdef GCW0
-else    SDL_Flip(myScreen); //TESTING ONLY
+//else    SDL_Flip(myScreen); //TESTING ONLY
 #endif
   myRectList->start();
 }

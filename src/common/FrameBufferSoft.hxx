@@ -20,7 +20,7 @@
 #ifndef FRAMEBUFFER_SOFT_HXX
 #define FRAMEBUFFER_SOFT_HXX
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 class OSystem;
 class RectList;

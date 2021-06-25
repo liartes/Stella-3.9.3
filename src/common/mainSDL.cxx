@@ -17,7 +17,7 @@
 // $Id: mainSDL.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include <cstdlib>
 
 #include "bspf.hxx"

@@ -20,7 +20,7 @@
 #ifndef RECTLIST_HXX
 #define RECTLIST_HXX
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 class RectList
 {

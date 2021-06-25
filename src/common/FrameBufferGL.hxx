@@ -22,7 +22,7 @@
 
 #ifdef DISPLAY_OPENGL
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include <SDL_opengl.h>
 #include <SDL_syswm.h>
 

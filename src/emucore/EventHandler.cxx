@@ -20,7 +20,7 @@
 #include <sstream>
 #include <set>
 #include <map>
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 #include "bspf.hxx"
 

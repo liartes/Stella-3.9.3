@@ -36,7 +36,7 @@
 #include "FrameBuffer.hxx"
 
 #ifdef GCW0
-#include <SDL_image.h>
+#include <SDL/SDL_image.h>
 #endif
 
 #ifdef DEBUGGER_SUPPORT
@@ -201,9 +201,9 @@ void FrameBuffer::update()
   // Determine which mode we are in (from the EventHandler)
   // Take care of S_EMULATE mode here, otherwise let the GUI
   // figure out what to draw
-#ifdef GCW0
+//#ifdef GCW0
   static uInt8 exitMenu = 0;
-#endif
+//#endif
   switch(myOSystem->eventHandler().state())
   {
     case EventHandler::S_EMULATE:

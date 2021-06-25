@@ -348,8 +348,8 @@ void UIDialog::loadConfig()
   // Debugger size
   const GUI::Size& ds = instance().settings().getSize("dbg.res");
   w = ds.w, h = ds.h;
-  w = BSPF_max(w, (int)DebuggerDialog::kSmallFontMinW);
-  h = BSPF_max(h, (int)DebuggerDialog::kSmallFontMinH);
+  //w = BSPF_max(w, (int)DebuggerDialog::kSmallFontMinW);
+  //h = BSPF_max(h, (int)DebuggerDialog::kSmallFontMinH);
   w = BSPF_min(w, (int)instance().desktopWidth());
   h = BSPF_min(h, (int)instance().desktopHeight());
 

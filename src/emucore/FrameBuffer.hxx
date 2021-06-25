@@ -21,7 +21,7 @@
 #define FRAMEBUFFER_HXX
 
 #include <map>
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 class FBSurface;
 class OSystem;
