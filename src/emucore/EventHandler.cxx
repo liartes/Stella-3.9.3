@@ -47,6 +47,9 @@
 
 #include "EventHandler.hxx"
 
+#include <dlfcn.h>
+#include <mmenu.h>
+
 #ifdef CHEATCODE_SUPPORT
   #include "Cheat.hxx"
   #include "CheatManager.hxx"
@@ -54,6 +57,9 @@
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
 #endif
+
+
+void* mmenu = NULL;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(OSystem* osystem)
@@ -1311,6 +1317,13 @@ bool EventHandler::eventStateChange(Event::Type type)
         handled = false;
       break;
 
+    case Event::MinuiMenuMode:
+      if(myState == S_EMULATE)
+        enterMinuiMenuMode(S_MINUIMENU);
+      else
+        handled = false;
+      break;
+
     case Event::CmdMenuMode:
       if(myState == S_EMULATE)
         enterMenuMode(S_CMDMENU);
@@ -1742,22 +1755,24 @@ void EventHandler::setDefaultKeymap(Event::Type event, EventMode mode)
   switch(mode)
   {
     case kEmulationMode:
-#ifdef GCW0
+#ifdef BITTBOY
       SET_DEFAULT_KEY(KBDK_UP,        mode, Event::JoystickZeroUp,    event);
       SET_DEFAULT_KEY(KBDK_DOWN,      mode, Event::JoystickZeroDown,  event);
       SET_DEFAULT_KEY(KBDK_LEFT,      mode, Event::JoystickZeroLeft,  event);
       SET_DEFAULT_KEY(KBDK_RIGHT,     mode, Event::JoystickZeroRight, event);
 
-      SET_DEFAULT_KEY(KBDK_LCTRL,     mode, Event::JoystickZeroFire,  event); //A
-      SET_DEFAULT_KEY(KBDK_LALT,      mode, Event::ConsoleSelect,     event); //B
-      SET_DEFAULT_KEY(KBDK_LSHIFT,    mode, Event::CmdMenuMode,       event); //X
-      SET_DEFAULT_KEY(KBDK_SPACE,     mode, Event::JoystickZeroFire5, event); //Y
+      SET_DEFAULT_KEY(KBDK_LCTRL,     mode, Event::JoystickZeroFire,  event); //B
+      SET_DEFAULT_KEY(KBDK_LALT,      mode, Event::CmdMenuMode,     event); //Y
+      SET_DEFAULT_KEY(KBDK_LSHIFT,    mode, Event::ConsoleReset,       event); //X
+      SET_DEFAULT_KEY(KBDK_SPACE,     mode, Event::JoystickZeroFire, event); //A
 
-      SET_DEFAULT_KEY(KBDK_BACKSPACE, mode, Event::SaveState,         event); //R
-      SET_DEFAULT_KEY(KBDK_TAB,       mode, Event::LoadState,         event); //L
-      SET_DEFAULT_KEY(KBDK_RETURN,    mode, Event::MenuMode,          event); //START
-      SET_DEFAULT_KEY(KBDK_ESCAPE,    mode, Event::ConsoleReset,      event); //SELECT
-      SET_DEFAULT_KEY(KBDK_PAUSE,     mode, Event::PauseMode,         event); //SLIDER DOWN
+//      SET_DEFAULT_KEY(KBDK_BACKSPACE, mode, Event::SaveState,         event); //R
+//      SET_DEFAULT_KEY(KBDK_TAB,       mode, Event::LoadState,         event); //L
+      SET_DEFAULT_KEY(KBDK_RETURN,    mode, Event::PauseMode,          event); //START
+//      SET_DEFAULT_KEY(KBDK_RETURN,    mode, Event::MenuMode,          event); //START
+      SET_DEFAULT_KEY(KBDK_ESCAPE,    mode, Event::MinuiMenuMode,      event); //MENU
+ //     SET_DEFAULT_KEY(KBDK_RCTRL,    mode, Event::ConsoleReset,      event); //SELECT
+ //     SET_DEFAULT_KEY(KBDK_PAUSE,     mode, Event::PauseMode,         event); //SLIDER DOWN
       SET_DEFAULT_KEY(KBDK_END,    mode, Event::MenuMode,          event); //START
 
 /*
@@ -1837,20 +1852,22 @@ void EventHandler::setDefaultKeymap(Event::Type event, EventMode mode)
       break;
 
     case kMenuMode:
-      /*SET_DEFAULT_KEY(KBDK_UP,        mode, Event::UIUp,      event);
+      SET_DEFAULT_KEY(KBDK_UP,        mode, Event::UIUp,      event);
       SET_DEFAULT_KEY(KBDK_DOWN,      mode, Event::UIDown,    event);
       SET_DEFAULT_KEY(KBDK_LEFT,      mode, Event::UILeft,    event);
-      SET_DEFAULT_KEY(KBDK_RIGHT,     mode, Event::UIRight,   event);*/
-      SET_DEFAULT_KEY(KBDK_RETURN,    mode, Event::UISelect,  event);
+      SET_DEFAULT_KEY(KBDK_RIGHT,     mode, Event::UIRight,   event);
+      SET_DEFAULT_KEY(KBDK_RETURN,    mode, Event::UISelect,  event); // START
+      SET_DEFAULT_KEY(KBDK_SPACE,    mode, Event::UISelect,  event); // A
       SET_DEFAULT_KEY(KBDK_BACKSPACE, mode, Event::UIPrevDir, event);
 #ifdef GCW0
-      SET_DEFAULT_KEY(KBDK_LALT,      mode, Event::UICancel,  event);
+      SET_DEFAULT_KEY(KBDK_LCTRL,      mode, Event::UICancel,  event);
 #else
       SET_DEFAULT_KEY(KBDK_HOME,      mode, Event::UIHome,    event);
-      SET_DEFAULT_KEY(KBDK_END,       mode, Event::UIEnd,     event);
+//      SET_DEFAULT_KEY(KBDK_END,       mode, Event::UIEnd,     event);
       SET_DEFAULT_KEY(KBDK_PAGEUP,    mode, Event::UIPgUp,    event);
       SET_DEFAULT_KEY(KBDK_PAGEDOWN,  mode, Event::UIPgDown,  event);
       SET_DEFAULT_KEY(KBDK_ESCAPE,    mode, Event::UICancel,  event);
+      SET_DEFAULT_KEY(KBDK_LCTRL,    mode, Event::UICancel,  event); // B
 #endif
       break;
 
@@ -2244,6 +2261,13 @@ void EventHandler::enterMenuMode(State state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::enterMinuiMenuMode(State state)
+{
+  myOSystem->sound().mute(true);
+  setEventState(state);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::leaveMenuMode()
 {
   setEventState(S_EMULATE);
@@ -2339,6 +2363,44 @@ void EventHandler::setEventState(State state)
       SDL_EnableUNICODE(1);
       break;
 
+    case S_MINUIMENU:
+    	//TODO libmmenu
+    	if(mmenu == NULL)
+    	{
+    		mmenu = dlopen("libmmenu.so", RTLD_LAZY);
+    	}
+		if (mmenu)
+		{
+			ShowMenu_t ShowMenu = (ShowMenu_t) dlsym(mmenu, "ShowMenu");
+
+			MenuReturnStatus status = ShowMenu(myOSystem->minuiRomPath(), myOSystem->refreshedMinuiSavePath(),
+					&myOSystem->frameBuffer().getMyScreen(), kMenuEventKeyDown);
+
+			if (status == kStatusExitGame) {
+				SDL_FillRect(&myOSystem->frameBuffer().getMyScreen(), NULL, 0x000000);
+			    SDL_UpdateRect(&myOSystem->frameBuffer().getMyScreen(), 0, 0, 0, 0);
+				handleEvent(Event::Quit, 1);
+
+			} else if (status == kStatusOpenMenu) {
+				enterMenuMode(S_MENU);
+
+			} else if (status >= kStatusLoadSlot) {
+				int slot = status - kStatusLoadSlot;
+			     setEventState(S_EMULATE);
+			     myOSystem->state().loadState(slot);
+
+			} else if (status >= kStatusSaveSlot) {
+				int slot = status - kStatusSaveSlot;
+		        setEventState(S_EMULATE);
+			     myOSystem->state().saveState(slot);
+
+			}
+			else {
+		        setEventState(S_EMULATE);
+			}
+		}
+      break;
+
     case S_LAUNCHER:
       myOverlay = &myOSystem->launcher();
       SDL_EnableUNICODE(1);
@@ -2386,7 +2448,7 @@ uInt32 EventHandler::resetEventsCallback(uInt32 interval, void* param)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setSDLMappings()
 {
-#ifdef GCW0
+/*#ifdef GCW0
   ourKBDKMapping[ KBDK_LCTRL ]        = "A";
   ourKBDKMapping[ KBDK_LALT ]         = "B";
   ourKBDKMapping[ KBDK_LSHIFT ]       = "X";
@@ -2394,6 +2456,18 @@ void EventHandler::setSDLMappings()
   ourKBDKMapping[ KBDK_TAB ]          = "L";
   ourKBDKMapping[ KBDK_BACKSPACE ]    = "R";
   ourKBDKMapping[ KBDK_ESCAPE ]       = "SELECT";
+  ourKBDKMapping[ KBDK_RETURN ]       = "START";
+  ourKBDKMapping[ KBDK_END ]       = "POWER";
+*/
+#ifdef BITTBOY
+  ourKBDKMapping[ KBDK_LCTRL ]        = "B";
+  ourKBDKMapping[ KBDK_LALT ]         = "Y";
+  ourKBDKMapping[ KBDK_LSHIFT ]       = "X";
+  ourKBDKMapping[ KBDK_SPACE ]        = "A";
+  ourKBDKMapping[ KBDK_TAB ]          = "L";
+  ourKBDKMapping[ KBDK_BACKSPACE ]    = "R";
+  ourKBDKMapping[ KBDK_RCTRL ]       = "SELECT";
+  ourKBDKMapping[ KBDK_ESCAPE ]       = "MENU";
   ourKBDKMapping[ KBDK_RETURN ]       = "START";
   ourKBDKMapping[ KBDK_END ]       = "POWER";
 #else
@@ -2405,6 +2479,7 @@ void EventHandler::setSDLMappings()
   ourKBDKMapping[ KBDK_LCTRL ]        = "LCTRL";
   ourKBDKMapping[ KBDK_LALT ]         = "LALT";
   ourKBDKMapping[ KBDK_SPACE ]        = "SPACE";
+  ourKBDKMapping[ KBDK_RCTRL ]        = "RCTRL";
 #endif
   ourKBDKMapping[ KBDK_CLEAR ]        = "CLEAR";
   ourKBDKMapping[ KBDK_PAUSE ]        = "PAUSE";
@@ -2613,7 +2688,6 @@ void EventHandler::setSDLMappings()
   ourKBDKMapping[ KBDK_CAPSLOCK ]     = "CAPSLOCK";
   ourKBDKMapping[ KBDK_SCROLLOCK ]    = "SCROLLOCK";
   ourKBDKMapping[ KBDK_RSHIFT ]       = "RSHIFT";
-  ourKBDKMapping[ KBDK_RCTRL ]        = "RCTRL";
   ourKBDKMapping[ KBDK_RALT ]         = "RALT";
   ourKBDKMapping[ KBDK_RMETA ]        = "RMETA";
   ourKBDKMapping[ KBDK_LMETA ]        = "LMETA";

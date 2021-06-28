@@ -95,6 +95,7 @@ class EventHandler
       S_LAUNCHER,
       S_MENU,
       S_CMDMENU,
+      S_MINUIMENU,
       S_DEBUGGER
     };
 
@@ -195,6 +196,7 @@ class EventHandler
     }
 
     void enterMenuMode(State state);
+    void enterMinuiMenuMode(State state);
     void leaveMenuMode();
     bool enterDebugMode();
     void leaveDebugMode();

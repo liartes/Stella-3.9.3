@@ -126,8 +126,6 @@ bool FrameBufferSoft::setVidMode(VideoMode& mode)
   }
   myFormat = myScreen->format;
   myBytesPerPixel = myFormat->BytesPerPixel;
-  fprintf(stderr, "Opening window with resolution %i*%i*%i\n",
-		  mode.screen_w, mode.screen_h, myBytesPerPixel);
   // Make sure the flags represent the current screen state
   mySDLFlags = myScreen->flags;
 
@@ -149,7 +147,6 @@ bool FrameBufferSoft::setVidMode(VideoMode& mode)
   }
   myBaseOffset = mode.image_y * myPitch + mode.image_x;
 
-  fprintf(stderr,"byBaseOffset -> %i\n", myBaseOffset);
 
   // If software mode can open the given screen, it will always be in the
   // requested format, or not at all; we only update mode when the screen
@@ -616,7 +613,6 @@ void FrameBufferSoft::postFrameUpdate()
 {
   if(myTiaDirty && !myInUIMode) //used during emulation and showing initial menu
   {
-	  fprintf(stderr,"postFrameUdpdate emulation and initial menu\n");
 #ifdef GCW0
     SDL_Flip(myScreen);
 #else
@@ -626,7 +622,6 @@ void FrameBufferSoft::postFrameUpdate()
   }
   else if(myRectList->numRects() > 0) //used to update menu highlighted buttons
   {
-	  fprintf(stderr,"postFrameUdpdate menu highlighted buttons\n");
 //myRectList->print(myScreen->w, myScreen->h);
 #ifdef GCW0
     SDL_Flip(myScreen);

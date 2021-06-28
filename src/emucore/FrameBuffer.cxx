@@ -201,9 +201,9 @@ void FrameBuffer::update()
   // Determine which mode we are in (from the EventHandler)
   // Take care of S_EMULATE mode here, otherwise let the GUI
   // figure out what to draw
-//#ifdef GCW0
+#ifdef GCW0
   static uInt8 exitMenu = 0;
-//#endif
+#endif
   switch(myOSystem->eventHandler().state())
   {
     case EventHandler::S_EMULATE:
@@ -276,7 +276,7 @@ void FrameBuffer::update()
       // When onscreen messages are enabled in double-buffer mode,
       // a full redraw is required
       myOSystem->menu().draw(myMsg.enabled && type() == kDoubleBuffer);
-      exitMenu = 3;
+      //exitMenu = 3;
       break;  // S_MENU
     }
 
@@ -285,7 +285,7 @@ void FrameBuffer::update()
       // When onscreen messages are enabled in double-buffer mode,
       // a full redraw is required
       myOSystem->commandMenu().draw(myMsg.enabled && type() == kDoubleBuffer);
-      exitMenu = 3;
+      //exitMenu = 3;
       break;  // S_CMDMENU
     }
 
@@ -1005,6 +1005,10 @@ uInt8 FrameBuffer::getPhosphor(uInt8 c1, uInt8 c2) const
     BSPF_swap(c1, c2);
 
   return ((c1 - c2) * myPhosphorBlend)/100 + c2;
+}
+
+SDL_Surface& FrameBuffer::getMyScreen() {
+	return *myScreen;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

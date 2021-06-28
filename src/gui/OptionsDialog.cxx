@@ -87,10 +87,10 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
 #endif
   wid.push_back(b);
 
-  b = addODButton("Input Settings", kInptCmd);
-  wid.push_back(b);
+//  b = addODButton("Input Settings", kInptCmd);
+//  wid.push_back(b);
 
-#ifndef GCW0
+#ifndef BITTBOY
   b = addODButton("UI Settings", kUsrIfaceCmd);
   wid.push_back(b);
   b = addODButton("Snapshot Settings", kSnapCmd);
@@ -101,7 +101,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   myRomAuditButton = addODButton("Audit ROMs", kAuditCmd);
   wid.push_back(myRomAuditButton);
 
-#ifndef GCW0
+#ifndef BITTBOY
   // Move to second column
   xoffset += buttonWidth + 10;  yoffset = 10;
 #endif
@@ -109,7 +109,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   myGameInfoButton = addODButton("Game Properties", kInfoCmd);
   wid.push_back(myGameInfoButton);
 
-#ifdef GCW0
+#ifdef BITTBOY
   b = addODButton("Exit Game", kExitCmd);
   wid.push_back(b);
 

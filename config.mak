@@ -6,7 +6,7 @@ CXXFLAGS = -Ofast -fdata-sections -ffunction-sections -fomit-frame-pointer -ffun
 CXXFLAGS += -Wframe-address -fsingle-precision-constant
 LD := /opt/trimui-toolchain/bin/arm-buildroot-linux-gnueabi-g++
 # -L/opt/trimui-toolchain/arm-buildroot-linux-gnueabi/sysroot/usr/lib
-LIBS += -lSDL -lSDL_image -ljpeg -lpng -lz
+LIBS += -lSDL -lSDL_image -lSDL_ttf -ldl -ljpeg -lpng -lz
 RANLIB := /opt/trimui-toolchain/bin/arm-linux-ranlib
 INSTALL := install
 AR := ar cru

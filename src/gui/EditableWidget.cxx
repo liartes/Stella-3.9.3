@@ -101,7 +101,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
 
   switch(key)
   {
-    case KBDK_RETURN:
+    case KBDK_SPACE: // btn A Trimui
     case KBDK_KP_ENTER:
       // confirm edit and exit editmode
       endEditMode();
@@ -109,7 +109,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
       dirty = true;
       break;
 
-    case KBDK_ESCAPE:
+    case KBDK_LCTRL: // btn B Trimui
       abortEditMode();
       sendCommand(EditableWidget::kCancelCmd, 0, _id);
       dirty = true;

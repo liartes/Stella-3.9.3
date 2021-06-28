@@ -463,6 +463,23 @@ void OSystem::createSound()
 #endif
 }
 
+char* OSystem::refreshedMinuiSavePath() {
+        ostringstream buf;
+        buf << myStateDir
+            << console().properties().get(Cartridge_Name)
+            << ".st%i";
+
+        string strPattern = buf.str();
+
+        if(myMinuiSavePath == NULL) {
+            myMinuiSavePath = new char[strPattern.size() + 1];
+        }
+        std::copy(strPattern.begin(), strPattern.end(), myMinuiSavePath);
+        myMinuiSavePath[strPattern.size()] = '\0';
+
+    	return myMinuiSavePath;
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
                               bool newrom)
@@ -481,6 +498,11 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
   {
     myRomFile = rom;
     myRomMD5  = md5sum;
+
+    myMinuiRomPath = new char[myRomFile.getPath().size() + 1];
+    std::copy(myRomFile.getPath().begin(), myRomFile.getPath().end(), myMinuiRomPath);
+    myMinuiRomPath[myRomFile.getPath().size()] = '\0';
+
 
     // Each time a new console is loaded, we simulate a cart removal
     // Some carts need knowledge of this, as they behave differently

@@ -362,6 +362,16 @@ class OSystem
     */
     const FilesystemNode& romFile() const { return myRomFile; }
 
+    char* minuiRomPath() {
+    	return myMinuiRomPath;
+    }
+
+    char* minuiSavePath() {
+    	return myMinuiSavePath;
+    }
+
+    char* refreshedMinuiSavePath();
+
     /**
       Creates a new game console from the specified romfile, and correctly
       initializes the system state to start emulation of the Console.
@@ -624,6 +634,9 @@ class OSystem
 
     string myFeatures;
     string myBuildInfo;
+
+    char* myMinuiRomPath;
+    char* myMinuiSavePath;
 
     // The font object to use for the normal in-game GUI
     GUI::Font* myFont;

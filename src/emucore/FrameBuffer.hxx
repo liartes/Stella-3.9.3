@@ -316,6 +316,8 @@ class FrameBuffer
     */
     uInt8 getPhosphor(uInt8 c1, uInt8 c2) const;
 
+    SDL_Surface& getMyScreen();
+
   //////////////////////////////////////////////////////////////////////
   // The following methods are system-specific and *may* be implemented
   // in derived classes.
